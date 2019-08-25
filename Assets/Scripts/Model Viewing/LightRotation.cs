@@ -13,10 +13,10 @@ public class LightRotation : MonoBehaviour
         transform.rotation = Down();
     }
 
-    private void Down()
+    private Quaternion Down()
     {
-        Quaternion phoneRotation = Input.gryo.attitude;
-        Quaternion differenceFromDown = Vector3.down - phoneRotation;
-        return differenceFromDown;
+        Vector3 eulerPhoneRotation = Input.gyro.attitude.eulerAngles;
+        Vector3 differenceFromDown = Vector3.down - eulerPhoneRotation;
+        return Quaternion.Euler(differenceFromDown);
     }
 }

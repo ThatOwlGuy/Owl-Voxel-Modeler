@@ -1,55 +1,99 @@
 ﻿using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Collections.Generic;
 using UnityEngine;
 
 public static class FileManagement
 {
     private static string path = Application.persistentDataPath + "/Owl Voxel Models/";
-    private static string currentOVM;
+    public static string currentOVM;
+
+    public static void SetCurrentOVM(string newOVM)
+    {
+        if(File.Exists(path + newOVM + ".ovm"))
+        {
+            currentOVM = newOVM;
+        }
+    }
+
+    public static OwlVoxelModel LoadCurrentOVM()
+    {
+        if(currentOVM == null || currentOVM.Length == 0)
+            return null;
+
+        return LoadOwlVoxelModel(currentOVM);
+    }
 
     public static void SaveOwlVoxelModel(OwlVoxelModel ovm, string name)
     {
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
         BinaryFormatter binaryFormatter = new BinaryFormatter();
-        FileStream fileStream = new FileStream(path + name + ".ovm", FileMode.CreateNew);
+        FileStream fileStream = new FileStream(path + name + ".ovm", FileMode.OpenOrCreate);
 
         binaryFormatter.Serialize(fileStream, ovm);
         fileStream.Close();
+
+        SetCurrentOVM(name);
     }
 
     public static OwlVoxelModel LoadOwlVoxelModel(string name)
     {
-        OwlVoxelModel loadedModel = null;
-
         if(File.Exists(path + name + ".ovm"))
         {
             BinaryFormatter binaryFormatter = new BinaryFormatter();
             FileStream fileStream = new FileStream(path + name + ".ovm", FileMode.Open);
 
-            loadedModel = binaryFormatter.Deserialize(fileStream) as OwlVoxelModel;
+            OwlVoxelModel loadedModel = binaryFormatter.Deserialize(fileStream) as OwlVoxelModel;
 
             fileStream.Close();
+            return loadedModel;
         }
             
-        return loadedModel;
+        return null;
     }
 
     public static string[] GetPathArrayOfOVMs()
     {
+        if(!Directory.Exists(path))
+            Directory.CreateDirectory(path);
+
         return Directory.GetFiles(path, "*.ovm");
+    }
+
+    public static bool ModelExists(string modelName)
+    {
+        return File.Exists(path + modelName + ".ovm");
     }
 }
 
 [System.Serializable]
 public class OwlVoxelModel
 {
-    OwlVoxel[] voxels;
+    public OwlVoxel[] voxels;
+
+    public void AddVoxel(OwlVoxel voxel)
+    {
+        OwlVoxel[] lonelyArray = {voxel};
+        AddVoxels(lonelyArray);
+    }
+
+    public void AddVoxels(OwlVoxel[] newVoxels)
+    {
+        List<OwlVoxel> voxelList = voxels == null ? new List<OwlVoxel>() : new List<OwlVoxel>(this.voxels);
+
+        voxelList.AddRange(new List<OwlVoxel>(newVoxels));
+
+        this.voxels = voxelList.ToArray();
+    }
 }
 
 [System.Serializable]
 public struct OwlVoxel
 {
     private int[] position;
-    private int[] color;
+    //private int[] color;
 
     public int x
     {
@@ -93,6 +137,7 @@ public struct OwlVoxel
         }
     }
 
+/*
     public int r
     {
         get
@@ -134,16 +179,16 @@ public struct OwlVoxel
             color[2] = ValidateColor(value);
         }
     }
-
+*/
     private int[] ValidateArray(int[] intArray)
     {
-        if(intArray.Length == 0)
+        if(intArray == null)
             intArray = new int[3];
 
         return intArray;
     }
 
-    private int ValidateColor(int colorValue)
+    /*private int ValidateColor(int colorValue)
     {
         if(colorValue > 255)
             colorValue = 255;
@@ -152,5 +197,5 @@ public struct OwlVoxel
             colorValue = 0;
 
         return colorValue;
-    }
+    }*/
 }

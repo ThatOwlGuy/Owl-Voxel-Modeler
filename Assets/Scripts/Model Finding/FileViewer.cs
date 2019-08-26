@@ -13,9 +13,14 @@ public class FileViewer : MonoBehaviour
 
     public void Start()
     {
-        ovms = GetVoxelModelNames();
-        ValidatePageButtons();
+        Refresh();
+        ValidatePages();
         RenderFileView();
+    }
+
+    public void Refresh()
+    {
+        ovms = GetVoxelModelNames();
     }
 
     private string[] GetVoxelModelNames()
@@ -32,19 +37,15 @@ public class FileViewer : MonoBehaviour
         {
             string file = nameFindingRegex.Matches(path)[0].Value;
 
-            print(file.Substring(0,file.Length-4));
-
             modelNames.Add(file.Substring(0, file.Length-4));
         }
 
         return modelNames.ToArray();
     }
 
-    private void RenderFileView()
+    public void RenderFileView()
     {
         ClearFileView();
-
-        
 
         int limit = page * filesPerPage > ovms.Length ? ovms.Length - ((page-1) * filesPerPage) : filesPerPage;
 
@@ -87,7 +88,7 @@ public class FileViewer : MonoBehaviour
         if(!AtEnd())
             page++;
 
-        ValidatePageButtons();
+        ValidatePages();
 
         RenderFileView();
     }
@@ -97,12 +98,12 @@ public class FileViewer : MonoBehaviour
         if(!AtBeginning())
             page--;
 
-        ValidatePageButtons();
+        ValidatePages();
 
         RenderFileView();
     }
 
-    private void ValidatePageButtons()
+    private void ValidatePages()
     {
         Button lastPage = GameObject.Find("Last Page").GetComponent<Button>();
         Button nextPage = GameObject.Find("Next Page").GetComponent<Button>();

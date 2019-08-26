@@ -24,6 +24,12 @@ public static class FileManagement
         return LoadOwlVoxelModel(currentOVM);
     }
 
+    public static void Delete(string name)
+    {
+        if(File.Exists(path + name + ".ovm"))
+            File.Delete(path + name + ".ovm");
+    }
+
     public static void SaveOwlVoxelModel(OwlVoxelModel ovm, string name)
     {
         if(!Directory.Exists(path))

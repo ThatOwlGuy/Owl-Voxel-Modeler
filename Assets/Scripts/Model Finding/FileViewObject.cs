@@ -37,4 +37,15 @@ public class FileViewObject : MonoBehaviour
 
         SceneManager.LoadScene("Voxel Model Viewer");
     }
+
+    public void DeleteModel()
+    {
+        FileManagement.Delete(fileName);
+
+        FileViewer fileViewer = FindObjectOfType<FileViewer>();
+
+        fileViewer.Refresh();
+        fileViewer.RenderFileView();
+
+    }
 }

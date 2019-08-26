@@ -42,8 +42,8 @@ public class Gimble : MonoBehaviour
                 
                 newRotation = initialRotation + new Vector3
                 (
-                    (initialMousePosition.y - Input.mousePosition.y) * 0.5f,
-                    (Input.mousePosition.x - initialMousePosition.x) * 0.5f,
+                    (initialMousePosition.y - Input.mousePosition.y) * 0.1f,
+                    (Input.mousePosition.x - initialMousePosition.x) * 0.1f,
                     0f
                 );
 
@@ -61,8 +61,8 @@ public class Gimble : MonoBehaviour
                 newRight = newRight.normalized;
 
                 newPosition = initialPosition + 
-                    (newForward * (initialMousePosition.y - Input.mousePosition.y) * 0.025f) +
-                    (newRight * (initialMousePosition.x - Input.mousePosition.x) * 0.025f);
+                    (newForward * (initialMousePosition.y - Input.mousePosition.y) * 0.01f) +
+                    (newRight * (initialMousePosition.x - Input.mousePosition.x) * 0.01f);
 
                 transform.position = newPosition;
             }
